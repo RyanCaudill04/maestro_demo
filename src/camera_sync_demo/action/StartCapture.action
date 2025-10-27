@@ -1,0 +1,11 @@
+# Goal: Sync node commands camera to start capture initialization
+string camera_id
+---
+# Result: Camera confirms it has started capturing
+bool capture_started
+string camera_id
+string status_message
+---
+# Feedback: Camera initialization progress
+string initialization_status
+int32 progress_percent

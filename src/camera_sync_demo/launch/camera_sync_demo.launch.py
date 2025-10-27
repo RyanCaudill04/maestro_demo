@@ -3,11 +3,20 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     return LaunchDescription([
-        # Start the sync coordinator first
+        # Start the maestro node first (coordinates final synchronization)
         Node(
             package='camera_sync_demo',
-            executable='sync_coordinator',
-            name='sync_coordinator',
+            executable='maestro_node',
+            name='maestro_node',
+            output='screen',
+            emulate_tty=True,
+        ),
+
+        # Start the sync node (sends start commands to cameras)
+        Node(
+            package='camera_sync_demo',
+            executable='sync_node',
+            name='sync_node',
             output='screen',
             emulate_tty=True,
         ),
