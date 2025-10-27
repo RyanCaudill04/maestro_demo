@@ -1,0 +1,12 @@
+# Goal: Camera requests to join the synchronized group
+string camera_id
+string ip_address
+---
+# Result: Coordinator signals all cameras are ready
+bool all_cameras_ready
+int32 total_cameras
+string[] camera_list
+---
+# Feedback: Status while waiting
+int32 cameras_ready_count
+string status_message

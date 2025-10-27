@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  ros2_dev:
+    build: .
+    container_name: maestro_ros2
+    volumes:
+      - ./src:/ros2_ws/src
+      - ./install:/ros2_ws/install
+      - ./build:/ros2_ws/build
+      - ./log:/ros2_ws/log
+    network_mode: host
+    stdin_open: true
+    tty: true
+    working_dir: /ros2_ws
