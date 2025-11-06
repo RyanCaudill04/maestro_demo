@@ -33,12 +33,6 @@ public:
     startup_time_ms_(startup_time_ms),
     is_publishing_(false)
   {
-    RCLCPP_INFO(this->get_logger(),
-                "Camera '%s' at %s initializing (startup time: %d ms)...",
-                camera_id_.c_str(),
-                ip_address_.c_str(),
-                startup_time_ms_);
-
     // Create action server to receive start commands from sync node
     action_server_ = rclcpp_action::create_server<StartCapture>(
       this,
@@ -62,10 +56,6 @@ public:
     image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>(
       camera_id_ + "/image_raw",
       10);
-
-    RCLCPP_INFO(this->get_logger(),
-                "Camera '%s' waiting for start capture command...",
-                camera_id_.c_str());
   }
 
   ~CameraNode()
@@ -87,9 +77,6 @@ private:
 
     // Only accept goal for this specific camera
     if (goal->camera_id == camera_id_) {
-      RCLCPP_INFO(this->get_logger(),
-                  "Camera '%s' received START CAPTURE command!",
-                  camera_id_.c_str());
       return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
     } else {
       return rclcpp_action::GoalResponse::REJECT;
@@ -136,11 +123,6 @@ private:
       feedback->initialization_status = "Initializing hardware (" +
                                        std::to_string(feedback->progress_percent) + "%)";
       goal_handle->publish_feedback(feedback);
-
-      RCLCPP_INFO(this->get_logger(),
-                  "Camera '%s' initialization progress: %d%%",
-                  camera_id_.c_str(),
-                  feedback->progress_percent);
     }
 
     // Initialization complete - send result to sync node
@@ -164,11 +146,6 @@ private:
   {
     if (msg->data && !is_publishing_) {
       is_publishing_ = true;
-
-      RCLCPP_INFO(this->get_logger(),
-                  "Camera '%s' received START PUBLISHING signal!",
-                  camera_id_.c_str());
-
       publish_status("capturing", "Now publishing synchronized images");
       start_publishing_images();
     }
@@ -186,12 +163,6 @@ private:
     status_msg.details = details;
 
     status_publisher_->publish(status_msg);
-
-    RCLCPP_INFO(this->get_logger(),
-                "Camera '%s' status: %s - %s",
-                camera_id_.c_str(),
-                status.c_str(),
-                details.c_str());
   }
 
   /**
@@ -199,10 +170,6 @@ private:
    */
   void start_publishing_images()
   {
-    RCLCPP_INFO(this->get_logger(),
-                "Camera '%s' starting synchronized image publishing at 30 Hz...",
-                camera_id_.c_str());
-
     // Create 30Hz timer for image publishing
     image_timer_ = this->create_wall_timer(
       33ms,
